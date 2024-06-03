@@ -27,8 +27,6 @@ public partial class User
 
     public int? Isdeleted { get; set; }
 
-    public int? Isactive { get; set; }
-
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<CookingSessionAttendee> CookingSessionAttendees { get; set; } = new List<CookingSessionAttendee>();
