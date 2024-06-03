@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Core2.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<div class="modal fade text-left" role="dialog" id="details" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white fw-bold">User details</h5>
+                <button type="button" class="btn rounded-circle text-white" data-bs-dismiss="modal" aria-label="Close">
+                    x
+                </button>
+            </div>
+            <div id="user-details" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fullname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fullname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BirthDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContactNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.UserId">Edit</a>
+                    <button type="button" class="btn btn-secondary" onclick="getUserDetails(@item.UserId)">Details</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteUser(@item.UserId)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        const deleteUser = (id) => {
+            if (confirm("Are you sure you want to delete the record?")) {
+                $.ajax({
+                    url: `/User/Delete/${id}`,
+                    type: "POST",
+                    success: (response) => {
+                        if (response.success) {
+                            window.location.reload(true);
+                        } else {
+                            console.error(response.error)
+                        }
+                    },
+                    error: (xhr, param, error) => console.log({ xhr, param, error })
+                });
+            }
+        }
+
+        const getUserDetails = (id) => {
+
+            $.ajax({
+                url: `/User/Details/${id}`,
+                type: "GET",
+                success: (response) => {
+                    if (response) {
+                        $('#user-details').html(response)
+                        $('#details').modal('show')
+                    } else {
+                        console.error(response.error)
+                    }
+                },
+                error: (xhr, param, error) => console.log({ xhr, param, error })
+            });
+
+        }
+    </script>
+}
